@@ -151,22 +151,6 @@ public class ContaController {
 		}
 		return ResponseEntity.ok(response);
 	}
-	/*
-	 * @GetMapping("{idConta}/bloqueio") public ResponseEntity<String>
-	 * bloqueio(HttpServletRequest request, BindingResult result,
-	 * 
-	 * @PathVariable Long idConta) {
-	 * logger.info("[ContaController][bloqueio][idConta: {}]", idConta.toString());
-	 * try { Optional<Conta> conta = contaService.findById(idConta);
-	 * 
-	 * if (conta.isPresent()) { conta.get().setFlagAtivo(false);
-	 * contaService.createOrUpdate(conta.get()); return
-	 * ResponseEntity.ok("Conta Bloqueada"); } else { return
-	 * ResponseEntity.badRequest().body("Register not found for id ".concat(idConta.
-	 * toString())); } } catch (Exception e) {
-	 * logger.error("[ContaController][bloqueio][error: {}]", e.getMessage());
-	 * return ResponseEntity.badRequest().body(e.getMessage()); } }
-	 */
 
 	@GetMapping(value = "{id}/bloqueio")
 	public ResponseEntity<String> bloqueio(@PathVariable Long id) {
