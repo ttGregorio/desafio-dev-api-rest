@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,9 +59,48 @@ class ContaControllerTest {
 
 		when(contaService.createOrUpdate(getContaToCreate())).thenReturn(getContaCreated());
 		when(contaService.findById(Long.valueOf(1))).thenReturn(Optional.of(getContaCreated()));
+		when(contaService.findById(Long.valueOf(10))).thenReturn(Optional.of(getContaToBlock()));
+		when(contaService.findById(Long.valueOf(11))).thenReturn(Optional.empty());
+		when(contaService.createOrUpdate(getContaToBlock())).thenReturn(getContaToBlocked());
 		when(contaService.findAll()).thenReturn(getContaList());
 		when(contaService.deposit(getContaCreated(), getMovementDTO())).thenReturn(getContaDeposit());
 		when(contaService.withdraw(getContaCreated(), getMovementDTO())).thenReturn(getContaDeposit());
+	}
+
+	@Test
+	void testBloqueioContaExistente() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "123123123");
+		try {
+			MvcResult result = this.mockMvc
+					.perform(get("/contas/1/bloqueio").headers(headers).content(new Gson().toJson(getContaToCreate()))
+							.contentType(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_HTML))
+					.andExpect(status().isOk()).andReturn();
+			assertNotNull(result.getResponse());
+
+			assertTrue(result.getResponse().getContentAsString().equals("Conta Bloqueada"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	void testBloqueioContaInexistente() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "123123123");
+		try {
+			MvcResult result = this.mockMvc
+					.perform(get("/contas/11/bloqueio").headers(headers).content(new Gson().toJson(getContaToCreate()))
+							.contentType(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_HTML))
+					.andExpect(status().isBadRequest()).andReturn();
+			assertNotNull(result.getResponse());
+
+			assertTrue(result.getResponse().getContentAsString().equals("Register not found for id 11"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -373,6 +413,16 @@ class ContaControllerTest {
 	private Conta getContaCreated() {
 		return new Conta(Long.valueOf(1), new Pessoa(Long.valueOf(1), "Nome Pessoa", "Cpf Pessoa", null),
 				new BigDecimal(10), new BigDecimal(0), true, Long.valueOf(1), null);
+	}
+
+	private Conta getContaToBlock() {
+		return new Conta(Long.valueOf(10), new Pessoa(Long.valueOf(1), "Nome Pessoa", "Cpf Pessoa", null),
+				new BigDecimal(10), new BigDecimal(0), true, Long.valueOf(1), null);
+	}
+
+	private Conta getContaToBlocked() {
+		return new Conta(Long.valueOf(10), new Pessoa(Long.valueOf(1), "Nome Pessoa", "Cpf Pessoa", null),
+				new BigDecimal(10), new BigDecimal(0), false, Long.valueOf(1), null);
 	}
 
 	private Conta getContaDeposit() {
