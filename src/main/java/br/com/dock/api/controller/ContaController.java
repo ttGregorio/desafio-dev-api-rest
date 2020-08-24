@@ -1,6 +1,7 @@
 package br.com.dock.api.controller;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,9 @@ public class ContaController {
 				result.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
 				return ResponseEntity.badRequest().body(response);
 			}
-//			conta.setDataCriacao(new Date());
+			if (conta.getDataCriacao() == null) {
+				conta.setDataCriacao(new Date());
+			}
 			conta.setFlagAtivo(true);
 
 			Conta partnerPersisted = contaService.createOrUpdate(conta);

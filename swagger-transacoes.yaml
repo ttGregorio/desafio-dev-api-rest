@@ -1,0 +1,292 @@
+swagger: "2.0"
+info:
+  description: "Swagger de execução do serviço de transações"
+  version: "1.0.0"
+  title: "Transações"
+  contact:
+    email: "thiagotgregorio@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/transacoes"
+tags:
+- name: "Conta"
+  description: "Serviços relativos a gestão de transações"
+schemes:
+- "https"
+- "http"
+paths:
+  /:
+    post:
+      tags:
+      - "Conta"
+      summary: "Adiciona uma nova transação"
+      description: ""
+      operationId: "addTransacao"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Transação a adicionar"
+        required: true
+        schema:
+          $ref: "#/definitions/Conta"
+      responses:
+        "200":
+          description: "Execução ocorrida com sucesso"
+          schema: 
+            $ref: '#/definitions/ResponseTransacaoUnique'
+        "400":
+          description: "Bad Gateway"
+          schema: 
+            $ref: '#/definitions/ResponseError'
+    put:
+      tags:
+      - "Conta"
+      summary: "Edita uma transação existente"
+      description: ""
+      operationId: "updateConta"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Conta a ser editada"
+        required: true
+        schema:
+          $ref: "#/definitions/Conta"
+      responses:
+        "200":
+          description: "Execução ocorrida com sucesso"
+          schema: 
+            $ref: '#/definitions/ResponseTransacaoUnique'
+        "400":
+          description: "Bad Gateway"
+          schema: 
+            $ref: '#/definitions/ResponseError'
+              
+  /{id}:
+    get:
+        tags:
+        - "Conta"
+        summary: "Lista de transações por conta"
+        parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: Id da conta a ser buscada
+        description: ""
+        operationId: "buscaTransacaoList"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        responses:
+          "200":
+            description: "Execução ocorrida com sucesso"
+            schema: 
+              $ref: '#/definitions/ResponseTransacaoList'
+          "400":
+            description: "Bad Gateway"
+            schema: 
+              $ref: '#/definitions/ResponseError'
+    delete:
+        tags:
+        - "Conta"
+        summary: "Exclusão de transações por id"
+        parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: Id da transação a ser excluída
+        description: ""
+        operationId: "deleteTransacao"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        responses:
+          "200":
+            description: "Execução ocorrida com sucesso"
+            schema: 
+              $ref: '#/definitions/ResponseTransacaoExcluida'
+          "400":
+            description: "Bad Gateway"
+            schema: 
+              $ref: '#/definitions/ResponseError'
+  /{id}/id:
+    get:
+        tags:
+        - "Conta"
+        summary: "Busca de transações por id"
+        parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: Id da transação a ser buscada
+        description: ""
+        operationId: "buscaTransacao"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        responses:
+          "200":
+            description: "Execução ocorrida com sucesso"
+            schema: 
+              $ref: '#/definitions/ResponseTransacaoUnique'
+          "400":
+            description: "Bad Gateway"
+            schema: 
+              $ref: '#/definitions/ResponseError'
+  /search:
+    post:
+      tags:
+      - "Conta"
+      summary: "Busca transações a partir dos critérios fornecidos"
+      description: ""
+      operationId: "buscaTransacoes"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Dados da consulta"
+        required: true
+        schema:
+          $ref: "#/definitions/TransacaoSearchDTO"
+      responses:
+        "200":
+          description: "Execução ocorrida com sucesso"
+          schema: 
+            $ref: '#/definitions/ResponseTransacaoUnique'
+        "400":
+          description: "Bad Gateway"
+          schema: 
+            $ref: '#/definitions/ResponseError'
+definitions:
+  Transacao:
+    type: "object"
+    properties:
+      idTransacao:
+        description: Id da transação
+        type: "integer"
+        format: "int64"
+      conta:
+        $ref: "#/definitions/Conta"
+      valor:
+        description: Valor da Transação
+        type: "number"
+      dataTransacao:
+        description: Data de transação
+        type: "string"
+  Pessoa:
+    type: "object"
+    properties:
+      idPessoa:
+        description: Id da pessoa
+        type: "integer"
+        format: "int64"
+      nome:
+        description: Nome da pessoa
+        type: "string"
+      cpf:
+        description: CPF da pessoa
+        type: "string"
+      dataCriacao:
+        description: Data de criação do registro
+        type: "string"
+  TransacaoSearchDTO:
+    type: "object"
+    properties:
+      dataInicial:
+        description: Data inicial de consulta no formato dd-MM-yyyy HH:mm:ss
+        type: "string"
+      dataFinal:
+        description: Data inicial de consulta no formato dd-MM-yyyy HH:mm:ss
+        type: "string"
+      idConta:
+        description: "Id da conta"
+        type: "integer"
+        format: "int64"
+  Conta:
+    type: "object"
+    required:
+    - "name"
+    - "photoUrls"
+    properties:
+      idConta:
+        description: "Id da conta"
+        type: "integer"
+        format: "int64"
+      pessoa:
+        $ref: "#/definitions/Pessoa"
+      saldo:
+        description: "Saldo em conta"
+        type: "number"
+      limiteSaqueDiario:
+        description: "Limite de saque em conta"
+        type: "number"
+      flagAtivo:
+        description: "Flag indicando se a conta está ou não ativa"
+        type: "number"
+      tipoConta:
+        description: "Tipo da conta"
+        type: "string"
+      dataCriacao:
+        description: "Tipo da conta"
+        type: "integer"
+        format: "int64"
+
+    xml:
+      name: "Conta"
+  ResponseTransacaoList:
+    type: "object"
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/Transacao"
+      errors:
+        type: object
+  ResponseTransacaoUnique:
+    type: "object"
+    properties:
+      data:
+        $ref: "#/definitions/Transacao"
+      errors:
+        type: object
+  ResponseError:
+    type: "object"
+    properties:
+      data:
+         type: object
+      errors:
+        description: "Lista de erros encontrados"
+        type: array
+        items:
+          type: string
+  ResponseTransacaoExcluida:
+    type: "object"
+    properties:
+      data:
+         type: string
+         description: Conta excluída com sucesso
+      errors:
+        description: "Lista de erros encontrados"
+        type: array
+        items:
+          type: string
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
