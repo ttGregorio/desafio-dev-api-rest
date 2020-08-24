@@ -1,0 +1,372 @@
+swagger: "2.0"
+info:
+  description: "Swagger de execução do serviço de contas"
+  version: "1.0.0"
+  title: "Contas"
+  contact:
+    email: "thiagotgregorio@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/contas"
+tags:
+- name: "Conta"
+  description: "Serviços relativos a gestão de conta"
+schemes:
+- "https"
+- "http"
+paths:
+  /:
+    post:
+      tags:
+      - "Conta"
+      summary: "Adiciona uma nova conta"
+      description: ""
+      operationId: "addConta"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Conta a adicionar"
+        required: true
+        schema:
+          $ref: "#/definitions/Conta"
+      responses:
+        "200":
+          description: "Execução ocorrida com sucesso"
+          schema: 
+            $ref: '#/definitions/ResponseContaUnique'
+        "400":
+          description: "Bad Gateway"
+          schema: 
+            $ref: '#/definitions/ResponseError'
+    put:
+      tags:
+      - "Conta"
+      summary: "Edita uma conta existente"
+      description: ""
+      operationId: "updateConta"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Conta a ser editada"
+        required: true
+        schema:
+          $ref: "#/definitions/Conta"
+      responses:
+        "200":
+          description: "Execução ocorrida com sucesso"
+          schema: 
+            $ref: '#/definitions/ResponseContaUnique'
+        "400":
+          description: "Bad Gateway"
+          schema: 
+            $ref: '#/definitions/ResponseError'
+    get:
+        tags:
+        - "Conta"
+        summary: "Lista de contas existentes"
+        description: ""
+        operationId: "listContas"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        responses:
+          "200":
+            description: "Execução ocorrida com sucesso"
+            schema: 
+              $ref: '#/definitions/ResponseContaList'
+          "400":
+            description: "Bad Gateway"
+            schema: 
+              $ref: '#/definitions/ResponseError'
+              
+  /{id}:
+    get:
+        tags:
+        - "Conta"
+        summary: "Busca de contas por id"
+        parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: Id da conta a ser buscada
+        description: ""
+        operationId: "findContas"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        responses:
+          "200":
+            description: "Execução ocorrida com sucesso"
+            schema: 
+              $ref: '#/definitions/ResponseContaUnique'
+          "400":
+            description: "Bad Gateway"
+            schema: 
+              $ref: '#/definitions/ResponseError'
+    delete:
+        tags:
+        - "Conta"
+        summary: "Exclusão de contas por id"
+        parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: Id da conta a ser excluída
+        description: ""
+        operationId: "deleteContas"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        responses:
+          "200":
+            description: "Execução ocorrida com sucesso"
+            schema: 
+              $ref: '#/definitions/ResponseContaExcluida'
+          "400":
+            description: "Bad Gateway"
+            schema: 
+              $ref: '#/definitions/ResponseError'
+  /{id}/saldo:
+    get:
+        tags:
+        - "Conta"
+        summary: "Busca de saldo de contas por id"
+        parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: Id da conta a ser buscada
+        description: ""
+        operationId: "saldoContas"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        responses:
+          "200":
+            description: "Execução ocorrida com sucesso"
+            schema: 
+              $ref: '#/definitions/ResponseSaldoConta'
+          "400":
+            description: "Bad Gateway"
+            schema: 
+              $ref: '#/definitions/ResponseError'
+  /{id}/bloqueio:
+    get:
+        tags:
+        - "Conta"
+        summary: "Bloqueio de contas por id"
+        parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: Id da conta a ser bloqueada
+        description: ""
+        operationId: "bloqueioContas"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        responses:
+          "200":
+            description: "Execução ocorrida com sucesso"
+            schema: 
+              $ref: '#/definitions/ResponseContaBloqueada'
+          "400":
+            description: "Bad Gateway"
+            schema: 
+              $ref: '#/definitions/ResponseError'
+  /deposit:
+    put:
+      tags:
+      - "Conta"
+      summary: "Realiza depósito em conta"
+      description: ""
+      operationId: "depositConta"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Dados do depósito"
+        required: true
+        schema:
+          $ref: "#/definitions/MovementDTO"
+      responses:
+        "200":
+          description: "Execução ocorrida com sucesso"
+          schema: 
+            $ref: '#/definitions/ResponseContaUnique'
+        "400":
+          description: "Bad Gateway"
+          schema: 
+            $ref: '#/definitions/ResponseError'
+  /saque:
+    put:
+      tags:
+      - "Conta"
+      summary: "Realiza saque em conta"
+      description: ""
+      operationId: "saqueConta"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Dados do saque"
+        required: true
+        schema:
+          $ref: "#/definitions/MovementDTO"
+      responses:
+        "200":
+          description: "Execução ocorrida com sucesso"
+          schema: 
+            $ref: '#/definitions/ResponseContaUnique'
+        "400":
+          description: "Bad Gateway"
+          schema: 
+            $ref: '#/definitions/ResponseError'
+definitions:
+  Pessoa:
+    type: "object"
+    properties:
+      idPessoa:
+        description: Id da pessoa
+        type: "integer"
+        format: "int64"
+      nome:
+        description: Nome da pessoa
+        type: "string"
+      cpf:
+        description: CPF da pessoa
+        type: "string"
+      dataCriacao:
+        description: Data de criação do registro
+        type: "string"
+    xml:
+      name: "Pessoa"
+  MovementDTO:
+    type: "object"
+    properties:
+      idConta:
+        description: Id da conta
+        type: "integer"
+        format: "int64"
+      value:
+        description: Valor da movimentação
+        type: "number"
+    xml:
+      name: "Pessoa"
+  Conta:
+    type: "object"
+    required:
+    - "name"
+    - "photoUrls"
+    properties:
+      idConta:
+        description: "Id da conta"
+        type: "integer"
+        format: "int64"
+      pessoa:
+        $ref: "#/definitions/Pessoa"
+      saldo:
+        description: "Saldo em conta"
+        type: "number"
+      limiteSaqueDiario:
+        description: "Limite de saque em conta"
+        type: "number"
+      flagAtivo:
+        description: "Flag indicando se a conta está ou não ativa"
+        type: "number"
+      tipoConta:
+        description: "Tipo da conta"
+        type: "string"
+      dataCriacao:
+        description: "Tipo da conta"
+        type: "integer"
+        format: "int64"
+
+    xml:
+      name: "Conta"
+  ResponseContaList:
+    type: "object"
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/Conta"
+      errors:
+        type: object
+  ResponseContaUnique:
+    type: "object"
+    properties:
+      data:
+        $ref: "#/definitions/Conta"
+      errors:
+        type: object
+  ResponseError:
+    type: "object"
+    properties:
+      data:
+         type: object
+      errors:
+        description: "Lista de erros encontrados"
+        type: array
+        items:
+          type: string
+  ResponseContaExcluida:
+    type: "object"
+    properties:
+      data:
+         type: string
+         description: Conta excluída com sucesso
+      errors:
+        description: "Lista de erros encontrados"
+        type: array
+        items:
+          type: string
+  ResponseContaBloqueada:
+    type: "object"
+    properties:
+      data:
+         type: string
+         description: Conta bloqueada
+      errors:
+        description: "Lista de erros encontrados"
+        type: array
+        items:
+          type: string
+  ResponseSaldoConta:
+    type: "object"
+    properties:
+      data:
+         type: string
+         description: Saldo da conta
+      errors:
+        description: "Lista de erros encontrados"
+        type: array
+        items:
+          type: string
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
